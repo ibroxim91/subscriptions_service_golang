@@ -5,6 +5,7 @@ import (
 	"os"
 	"subscriptions_service_golang/docs"
 	"subscriptions_service_golang/internal/handlers"
+	"subscriptions_service_golang/internal/middleware"
 	"subscriptions_service_golang/internal/repositories"
 	"subscriptions_service_golang/internal/services"
 	"subscriptions_service_golang/pkg"
@@ -43,12 +44,28 @@ func main() {
 	docs.SwaggerInfo.BasePath = "/"
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	r.POST("/subscriptions", handler.Create)
-	r.GET("/subscriptions/:id", handler.GetByID)
-	r.GET("/subscriptions", handler.List)
-	r.PUT("/subscriptions/:id", handler.Update)
-	r.DELETE("/subscriptions/:id", handler.Delete)
-	r.GET("/subscriptions/total", handler.TotalPrice)
+	authHandler := handlers.NewAuthHandler()
+	r.POST("/login", authHandler.Login)
+
+	auth := r.Group("/")
+	auth.Use(middleware.AuthMiddleware(true))
+	{
+		auth.POST("/subscriptions", handler.Create)
+		auth.PUT("/subscriptions/:id", handler.Update)
+		auth.DELETE("/subscriptions/:id", handler.Delete)
+	}
+
+	// r.POST("/subscriptions", handler.Create)
+	// r.PUT("/subscriptions/:id", handler.Update)
+	// r.DELETE("/subscriptions/:id", handler.Delete)
+	optional := r.Group("/")
+	optional.Use(middleware.AuthMiddleware(false))
+	{
+
+		optional.GET("/subscriptions/:id", handler.GetByID)
+		optional.GET("/subscriptions", handler.List)
+		optional.GET("/subscriptions/total", handler.TotalPrice)
+	}
 
 	r.Run(":8080")
 }
