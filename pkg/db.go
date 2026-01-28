@@ -18,3 +18,14 @@ func Init(dsn string) *gorm.DB {
 	}
 	return db
 }
+
+
+
+
+
+
+
+
+
+
+

@@ -32,7 +32,6 @@ func NewSubscriptionHandler(service services.SubscriptionService) *SubscriptionH
 // @Failure 500 {object} map[string]string
 // @Router /subscriptions [post]
 func (h *SubscriptionHandler) Create(c *gin.Context) {
-    
 
 	var req models.Subscription
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -49,7 +48,15 @@ func (h *SubscriptionHandler) Create(c *gin.Context) {
 	c.JSON(http.StatusCreated, sub)
 }
 
-// GET /subscriptions/:id
+// GetSubscriptionByID godoc
+// @Summary Get subscription by ID
+// @Tags subscriptions
+// @Produce json
+// @Param id path int true "Subscription ID"
+// @Success 200 {object} models.Subscription
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 404 {object} models.ErrorResponse
+// @Router /subscriptions/{id} [get]
 func (h *SubscriptionHandler) GetByID(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.Atoi(idStr)
@@ -67,7 +74,17 @@ func (h *SubscriptionHandler) GetByID(c *gin.Context) {
 	c.JSON(http.StatusOK, sub)
 }
 
-// GET /subscriptions
+// ListSubscriptions godoc
+// @Summary List subscriptions with optional filters
+// @Tags subscriptions
+// @Produce json
+// @Param user_id query string false "Filter by user ID"
+// @Param service_name query string false "Filter by service name"
+// @Param from query string false "Filter from date (YYYY-MM-DD)"
+// @Param to query string false "Filter to date (YYYY-MM-DD)"
+// @Success 200 {array} models.Subscription
+// @Failure 500 {object} models.ErrorResponse
+// @Router /subscriptions [get]
 func (h *SubscriptionHandler) List(c *gin.Context) {
 	userID := c.Query("user_id")
 	serviceName := c.Query("service_name")
@@ -95,7 +112,17 @@ func (h *SubscriptionHandler) List(c *gin.Context) {
 	c.JSON(http.StatusOK, subs)
 }
 
-// PUT /subscriptions/:id
+// UpdateSubscription godoc
+// @Summary Update subscription by ID
+// @Tags subscriptions
+// @Accept json
+// @Produce json
+// @Param id path int true "Subscription ID"
+// @Param subscription body models.Subscription true "Updated subscription object"
+// @Success 200 {object} models.Subscription
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /subscriptions/{id} [put]
 func (h *SubscriptionHandler) Update(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.Atoi(idStr)
@@ -122,7 +149,15 @@ func (h *SubscriptionHandler) Update(c *gin.Context) {
 	c.JSON(http.StatusOK, sub)
 }
 
-// DELETE /subscriptions/:id
+// DeleteSubscription godoc
+// @Summary Delete subscription by ID
+// @Tags subscriptions
+// @Produce json
+// @Param id path int true "Subscription ID"
+// @Success 200 {object} map[string]string
+// @Failure 400 {object} models.ErrorResponse
+// @Failure 500 {object} models.ErrorResponse
+// @Router /subscriptions/{id} [delete]
 func (h *SubscriptionHandler) Delete(c *gin.Context) {
 	idStr := c.Param("id")
 	id, err := strconv.Atoi(idStr)
@@ -139,7 +174,17 @@ func (h *SubscriptionHandler) Delete(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "deleted"})
 }
 
-// GET /subscriptions/total
+// GetTotalPrice godoc
+// @Summary Calculate total price of subscriptions
+// @Tags subscriptions
+// @Produce json
+// @Param user_id query string false "Filter by user ID"
+// @Param service_name query string false "Filter by service name"
+// @Param from query string false "Filter from date (YYYY-MM-DD)"
+// @Param to query string false "Filter to date (YYYY-MM-DD)"
+// @Success 200 {object} map[string]int
+// @Failure 500 {object} models.ErrorResponse
+// @Router /subscriptions/total [get]
 func (h *SubscriptionHandler) TotalPrice(c *gin.Context) {
 	userID := c.Query("user_id")
 	serviceName := c.Query("service_name")
