@@ -106,11 +106,18 @@ Content-Type: application/json
   "username": "admin",
   "password": "password"
 }
-Ответ:
+```
+### Ответ:
+
+```bash
+{
+  "token": "test-token"
+}
+```
 
 ### Использование токена
 
-Добавьте заголовок:
+### Добавьте заголовок:
 
 ``` bash 
 Authorization: Bearer test-token
