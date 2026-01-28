@@ -8,12 +8,12 @@ import (
 	"gorm.io/gorm"
 )
 
-func InitDB(dsn string) *gorm.DB {
+func Init(dsn string) *gorm.DB {
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Fatalf("db connect error: %v", err)
 	}
-	if err := db.AutoMigrate(&models.User{}, &models.Author{}, &models.Book{}, &models.Comment{}); err != nil {
+	if err := db.AutoMigrate(&models.Subscription{}); err != nil {
 		log.Fatalf("migration error: %v", err)
 	}
 	return db
